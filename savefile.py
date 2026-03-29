@@ -1,12 +1,12 @@
 from typing import Tuple
 
 class Offset:
-    TEXT = 0x31D
-    HEADER_CHECKSUM = 0x330
-    VOICE = 0x1D394
-    BODY_CHECKSUM = 0x3ACA4
-    HEADER_RANGE = (0x2F8, 0x330)
-    BODY_RANGE = (0x334, 0x3ACA4)
+    TEXT = 0x31D-0x14
+    HEADER_CHECKSUM = 0x330-0x14
+    VOICE = 0x1D394-0x14
+    BODY_CHECKSUM = 0x3ACA4-0x14
+    HEADER_RANGE = (0x2F8-0x14, 0x330-0x14)
+    BODY_RANGE = (0x334-0x14, 0x3ACA4-0x14)
     MIN_FILE_SIZE = BODY_CHECKSUM + 4
 
 
@@ -17,10 +17,6 @@ def write_u32(buf: bytearray, offset: int, value: int):
 def fix_checksum(buf: bytearray, sum_range: tuple[int, int], out_offset: int):
     start, end = sum_range
     write_u32(buf, out_offset, sum(buf[start:end]))
-
-
-def is_file_large_enough(buf: bytearray) -> bool:
-    return len(buf) < Offset.MIN_FILE_SIZE
 
 
 def get_savefile_langs(buf: bytearray) -> Tuple[int, int]:
