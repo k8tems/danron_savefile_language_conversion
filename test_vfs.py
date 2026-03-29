@@ -1,7 +1,6 @@
 from pathlib import Path
 import pytest
-from vfs import parse_vfs, is_data_bin
-from savefile import get_savefile_langs
+from vfs import parse_vfs, is_data_bin, get_savefile_langs
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 

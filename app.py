@@ -7,8 +7,7 @@ from pathlib import Path
 import uuid
 import uvicorn
 from dotenv import load_dotenv
-from savefile import edit_savefile, get_savefile_langs, get_event_id
-from vfs import parse_vfs, rebuild_vfs, is_data_bin
+from vfs import parse_vfs, rebuild_vfs, is_data_bin, edit_savefile, get_savefile_langs, get_event_id
 from urllib.parse import quote
 
 load_dotenv()
