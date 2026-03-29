@@ -47,8 +47,8 @@ async def upload(file: UploadFile = File(...)):
     data = bytearray(await file.read())
     log.info("File size: %d bytes", len(data))
 
-    entries, trailing = parse_vfs(data)
-    log.info("VFS parsed: %d entries, %d bytes trailing", len(entries), len(trailing))
+    entries = parse_vfs(data)
+    log.info("VFS parsed: %d entries", len(entries))
     for entry in entries:
         log.info("  entry: %s (%d bytes)", entry.name, len(entry.data))
 
@@ -77,7 +77,6 @@ async def upload(file: UploadFile = File(...)):
     file_id = str(uuid.uuid4())
     file_store[file_id] = {
         "entries": entries,
-        "trailing": trailing,
         "filename": file.filename or "savefile.vfs",
     }
 
@@ -98,7 +97,6 @@ async def convert(request: Request):
         raise HTTPException(404, "ファイルが見つかりません。再アップロードしてください。")
 
     entries = entry_data["entries"]
-    trailing = entry_data["trailing"]
     filename = entry_data["filename"]
 
     settings_map = {s["name"]: s for s in settings}
@@ -111,7 +109,7 @@ async def convert(request: Request):
                      f"0x{eid:X}" if eid is not None else "(unchanged)")
             edit_savefile(entry.data, s["voice_lang"], s["text_lang"], event_id=eid)
 
-    result = rebuild_vfs(entries, trailing)
+    result = rebuild_vfs(entries)
 
     download_name = f"converted_{filename}"
     encoded_name = quote(download_name)

@@ -1,7 +1,8 @@
 import re
-from typing import List, Tuple
+from typing import List
 
 DEADBEEF = 0xDEADBEEF
+DEADBEEF_BYTES = DEADBEEF.to_bytes(4, "little")
 
 
 class VfsEntry:
@@ -16,7 +17,7 @@ def _read_u32(buf, offset: int) -> int:
     return int.from_bytes(buf[offset:offset + 4], "little")
 
 
-def parse_vfs(raw: bytearray) -> Tuple[List[VfsEntry], bytes]:
+def parse_vfs(raw: bytearray) -> List[VfsEntry]:
     entries: List[VfsEntry] = []
     p = 0
     while p + 4 <= len(raw):
@@ -31,11 +32,14 @@ def parse_vfs(raw: bytearray) -> Tuple[List[VfsEntry], bytes]:
         data = bytearray(raw[p:p + data_len])
         p += data_len
         entries.append(VfsEntry(name, data))
-    trailing = bytes(raw[p:])
-    return entries, trailing
+    if raw[p:p + 4] != DEADBEEF_BYTES:
+        raise ValueError(
+            f"VFS does not end with 0xDEADBEEF (got {raw[p:p+4].hex()})"
+        )
+    return entries
 
 
-def rebuild_vfs(entries: List[VfsEntry], trailing: bytes) -> bytearray:
+def rebuild_vfs(entries: List[VfsEntry]) -> bytearray:
     out = bytearray()
     for e in entries:
         name_bytes = e.name.encode("utf-8")
@@ -43,7 +47,7 @@ def rebuild_vfs(entries: List[VfsEntry], trailing: bytes) -> bytearray:
         out += name_bytes
         out += len(e.data).to_bytes(4, "little")
         out += e.data
-    out += trailing
+    out += DEADBEEF_BYTES
     return out
 
 

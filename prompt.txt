@@ -1,3 +1,5 @@
-For each .bin file with it's Offset defined in savefile.py, the current event ID is stored in 0x340.
-I'd like for you to make this modifiable in the frontend UI.
-Since these are hex numbers, they should be editboxes and not selectboxes like the language configs.
+I don't like how trailing bytes are passed around when valid files will always end with 0xDEADBEEF.
+Before we start implementing the refactor, I'd like you to add a failing test that checks that the trailing DWORD is 0xDEADBEEF in savedata_jp_no_deadbeef.vfs.
+If they are not, raise an exception in the parsing function.
+Also add a test for savedata_jp.vfs which should not fail due to 0xDEADBEEF being there.
+When you verify that the tests both fail, start implementing the refactor.
