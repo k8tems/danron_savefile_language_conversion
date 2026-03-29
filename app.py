@@ -9,6 +9,7 @@ import uvicorn
 from dotenv import load_dotenv
 from savefile import edit_savefile, get_savefile_langs
 from vfs import parse_vfs, rebuild_vfs, is_data_bin
+from urllib.parse import quote
 
 load_dotenv()
 
@@ -106,13 +107,17 @@ async def convert(request: Request):
             edit_savefile(entry.data, s["voice_lang"], s["text_lang"])
 
     result = rebuild_vfs(entries, trailing)
-    log.info("Rebuilt VFS: %d bytes, returning as converted_%s", len(result), filename)
+
+    download_name = f"converted_{filename}"
+    encoded_name = quote(download_name)
+
+    log.info("Rebuilt VFS: %d bytes, returning as %s", len(result), download_name)
 
     return Response(
         content=bytes(result),
         media_type="application/octet-stream",
         headers={
-            "Content-Disposition": f'attachment; filename="converted_{filename}"'
+            "Content-Disposition": f"attachment; filename*=UTF-8''{encoded_name}"
         },
     )
 
