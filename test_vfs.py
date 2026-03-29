@@ -1,5 +1,6 @@
 from pathlib import Path
 from vfs import parse_vfs, is_data_bin
+from savefile import get_savefile_langs, is_file_large_enough
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 
@@ -49,3 +50,14 @@ def test_is_data_bin():
     assert all(n.startswith("icon") for n in icon_names)
     assert len(data_names) == 16
     assert len(icon_names) == 12
+
+
+def test_savedata_jp_langs():
+    raw = bytearray((FIXTURES / "savedata_jp.vfs").read_bytes())
+    entries, _ = parse_vfs(raw)
+    data_entries = [e for e in entries if is_data_bin(e.name) and not is_file_large_enough(e.data)]
+    assert len(data_entries) > 0, "No valid data bins found"
+    for entry in data_entries:
+        text, voice = get_savefile_langs(entry.data)
+        assert voice == 1, f"{entry.name}: expected voice=1 (JP), got {voice}"
+        assert text == 1, f"{entry.name}: expected text=1 (JP), got {text}"
