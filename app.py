@@ -1,8 +1,13 @@
+import os
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.responses import HTMLResponse, Response, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 import uuid
+import uvicorn
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI(title="セーブファイル言語変換")
 
@@ -101,6 +106,4 @@ async def convert(
 
 
 if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=os.environ['PORT'])
