@@ -56,42 +56,40 @@
         <div id="settings-section" class="panel" hidden>
             <div class="panel-title">🔧 言語設定</div>
             <div class="panel-content">
-                <table class="settings-table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>現在の設定</th>
-                            <th></th>
-                            <th>変換後</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="label-cell">ボイス言語</td>
-                            <td><span id="current-voice" class="current-val"></span></td>
-                            <td class="arrow-cell">▶</td>
-                            <td>
-                                <select id="voice-select" class="retro-select">
-                                    <option value="0">English</option>
-                                    <option value="1">日本語</option>
-                                    <option value="2">中文</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="label-cell">テキスト言語</td>
-                            <td><span id="current-text" class="current-val"></span></td>
-                            <td class="arrow-cell">▶</td>
-                            <td>
-                                <select id="text-select" class="retro-select">
-                                    <option value="0">English</option>
-                                    <option value="1">日本語</option>
-                                    <option value="2">中文</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="bulk-row">
+                    <span class="bulk-label">一括設定:</span>
+                    <label>ボイス
+                        <select id="bulk-voice" class="retro-select">
+                            <option value="">--</option>
+                            <option value="0">English</option>
+                            <option value="1">日本語</option>
+                            <option value="2">中文</option>
+                        </select>
+                    </label>
+                    <label>テキスト
+                        <select id="bulk-text" class="retro-select">
+                            <option value="">--</option>
+                            <option value="0">English</option>
+                            <option value="1">日本語</option>
+                            <option value="2">中文</option>
+                        </select>
+                    </label>
+                    <button id="bulk-apply-btn" class="retro-btn">適用</button>
+                </div>
+                <div class="subfiles-scroll">
+                    <table class="settings-table">
+                        <thead>
+                            <tr>
+                                <th>ファイル</th>
+                                <th>ボイス (現在)</th>
+                                <th>ボイス (変更)</th>
+                                <th>テキスト (現在)</th>
+                                <th>テキスト (変更)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subfiles-tbody"></tbody>
+                    </table>
+                </div>
                 <div class="btn-row">
                     <button id="convert-btn" class="retro-btn big">★ 変換実行 ★</button>
                 </div>

@@ -214,6 +214,40 @@ body::before {
     cursor: pointer;
 }
 
+/* ===== Bulk Set Row ===== */
+.bulk-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--panel-dark);
+    font-size: 13px;
+}
+
+.bulk-label {
+    font-weight: bold;
+}
+
+.bulk-row label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ===== Subfiles Scroll ===== */
+.subfiles-scroll {
+    max-height: 320px;
+    overflow-y: auto;
+    border: 1px solid var(--panel-dark);
+    margin-bottom: 14px;
+}
+
+.subfiles-scroll .settings-table {
+    margin-bottom: 0;
+}
+
 /* ===== Upload Section ===== */
 .upload-row {
     display: flex;

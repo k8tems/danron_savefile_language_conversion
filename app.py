@@ -1,12 +1,13 @@
 import os
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Request
 from fastapi.responses import HTMLResponse, Response, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 import uuid
 import uvicorn
 from dotenv import load_dotenv
-from savefile import edit_savefile, is_file_large_enough
+from savefile import edit_savefile, is_file_large_enough, get_savefile_langs
+from vfs import parse_vfs, rebuild_vfs, is_data_bin
 
 load_dotenv()
 
@@ -38,41 +39,60 @@ async def sayaka():
 @app.post("/api/upload")
 async def upload(file: UploadFile = File(...)):
     data = bytearray(await file.read())
+    entries, trailing = parse_vfs(data)
 
-    if is_file_large_enough(data):
-        raise HTTPException(400, "ファイルが小さすぎます。有効なセーブファイルではありません。")
+    subfiles = []
+    for entry in entries:
+        if not is_data_bin(entry.name):
+            continue
+        if is_file_large_enough(entry.data):
+            continue
+        text, voice = get_savefile_langs(entry.data)
+        subfiles.append({
+            "name": entry.name,
+            "voice_lang": voice,
+            "text_lang": text,
+            "voice_lang_name": LANG_NAMES.get(voice, f"不明 ({voice})"),
+            "text_lang_name": LANG_NAMES.get(text, f"不明 ({text})"),
+        })
 
-    from savefile import get_savefile_langs
-    text, voice = get_savefile_langs(data)
+    if not subfiles:
+        raise HTTPException(400, "有効なセーブデータが見つかりませんでした。")
 
     file_id = str(uuid.uuid4())
-    file_store[file_id] = {"data": data, "filename": file.filename or "savefile.vfs"}
-
-    return {
-        "file_id": file_id,
-        "voice_lang": voice,
-        "text_lang": text,
-        "voice_lang_name": LANG_NAMES.get(voice, f"不明 ({voice})"),
-        "text_lang_name": LANG_NAMES.get(text, f"不明 ({text})"),
+    file_store[file_id] = {
+        "entries": entries,
+        "trailing": trailing,
+        "filename": file.filename or "savefile.vfs",
     }
 
+    return {"file_id": file_id, "subfiles": subfiles}
+
+
 @app.post("/api/convert")
-async def convert(
-    file_id: str = Form(...),
-    voice_lang: int = Form(...),
-    text_lang: int = Form(...),
-):
-    entry = file_store.pop(file_id, None)
-    if not entry:
+async def convert(request: Request):
+    body = await request.json()
+    file_id = body["file_id"]
+    settings = body["settings"]
+
+    entry_data = file_store.pop(file_id, None)
+    if not entry_data:
         raise HTTPException(404, "ファイルが見つかりません。再アップロードしてください。")
 
-    buf = entry["data"]
-    filename = entry["filename"]
+    entries = entry_data["entries"]
+    trailing = entry_data["trailing"]
+    filename = entry_data["filename"]
 
-    edit_savefile(buf, voice_lang, text_lang)
+    settings_map = {s["name"]: s for s in settings}
+    for entry in entries:
+        if entry.name in settings_map:
+            s = settings_map[entry.name]
+            edit_savefile(entry.data, s["voice_lang"], s["text_lang"])
+
+    result = rebuild_vfs(entries, trailing)
 
     return Response(
-        content=bytes(buf),
+        content=bytes(result),
         media_type="application/octet-stream",
         headers={
             "Content-Disposition": f'attachment; filename="converted_{filename}"'
