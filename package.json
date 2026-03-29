@@ -1,0 +1,9 @@
+{
+  "name": "danron-savefile-language-conversion",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test vfs.test.js"
+  }
+}
