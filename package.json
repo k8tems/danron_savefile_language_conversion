@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "npx --yes serve .",
+    "start": "npx --yes serve src",
     "test": "node --test vfs.test.js"
   }
 }

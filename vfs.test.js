@@ -12,7 +12,7 @@ import {
   editSavefile,
   readU32,
   Offset,
-} from "./vfs.js";
+} from "./src/vfs.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FIXTURES = join(__dirname, "fixtures");
