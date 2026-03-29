@@ -6,6 +6,7 @@ from pathlib import Path
 import uuid
 import uvicorn
 from dotenv import load_dotenv
+from savefile import edit_savefile, is_file_large_enough
 
 load_dotenv()
 
@@ -17,28 +18,7 @@ file_store: dict[str, dict] = {}
 
 LANG_NAMES = {0: "English", 1: "日本語", 2: "中文"}
 
-
-class Offset:
-    TEXT = 0x31D
-    HEADER_CHECKSUM = 0x330
-    VOICE = 0x1D394
-    BODY_CHECKSUM = 0x3ACA4
-    HEADER_RANGE = (0x2F8, 0x330)
-    BODY_RANGE = (0x334, 0x3ACA4)
-    MIN_FILE_SIZE = BODY_CHECKSUM + 4
-
-
-def write_u32(buf: bytearray, offset: int, value: int):
-    buf[offset:offset + 4] = value.to_bytes(4, byteorder="little", signed=False)
-
-
-def fix_checksum(buf: bytearray, sum_range: tuple[int, int], out_offset: int):
-    start, end = sum_range
-    write_u32(buf, out_offset, sum(buf[start:end]))
-
-
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
-
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
@@ -59,11 +39,11 @@ async def sayaka():
 async def upload(file: UploadFile = File(...)):
     data = bytearray(await file.read())
 
-    if len(data) < Offset.MIN_FILE_SIZE:
+    if is_file_large_enough(data):
         raise HTTPException(400, "ファイルが小さすぎます。有効なセーブファイルではありません。")
 
-    voice = data[Offset.VOICE]
-    text = data[Offset.TEXT]
+    from savefile import get_savefile_langs
+    text, voice = get_savefile_langs(data)
 
     file_id = str(uuid.uuid4())
     file_store[file_id] = {"data": data, "filename": file.filename or "savefile.vfs"}
@@ -75,7 +55,6 @@ async def upload(file: UploadFile = File(...)):
         "voice_lang_name": LANG_NAMES.get(voice, f"不明 ({voice})"),
         "text_lang_name": LANG_NAMES.get(text, f"不明 ({text})"),
     }
-
 
 @app.post("/api/convert")
 async def convert(
@@ -90,11 +69,7 @@ async def convert(
     buf = entry["data"]
     filename = entry["filename"]
 
-    buf[Offset.VOICE] = voice_lang
-    buf[Offset.TEXT] = text_lang
-
-    fix_checksum(buf, Offset.HEADER_RANGE, Offset.HEADER_CHECKSUM)
-    fix_checksum(buf, Offset.BODY_RANGE, Offset.BODY_CHECKSUM)
+    edit_savefile(buf, voice_lang, text_lang)
 
     return Response(
         content=bytes(buf),
