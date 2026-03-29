@@ -7,7 +7,7 @@ from pathlib import Path
 import uuid
 import uvicorn
 from dotenv import load_dotenv
-from savefile import edit_savefile, get_savefile_langs
+from savefile import edit_savefile, get_savefile_langs, get_event_id
 from vfs import parse_vfs, rebuild_vfs, is_data_bin
 from urllib.parse import quote
 
@@ -58,14 +58,16 @@ async def upload(file: UploadFile = File(...)):
             log.debug("Skipping non-data entry: %s", entry.name)
             continue
         text, voice = get_savefile_langs(entry.data)
-        log.info("  %s: voice=%d (%s), text=%d (%s)",
-                 entry.name, voice, LANG_NAMES.get(voice, "?"), text, LANG_NAMES.get(text, "?"))
+        event_id = get_event_id(entry.data)
+        log.info("  %s: voice=%d (%s), text=%d (%s), event_id=0x%X",
+                 entry.name, voice, LANG_NAMES.get(voice, "?"), text, LANG_NAMES.get(text, "?"), event_id)
         subfiles.append({
             "name": entry.name,
             "voice_lang": voice,
             "text_lang": text,
             "voice_lang_name": LANG_NAMES.get(voice, f"不明 ({voice})"),
             "text_lang_name": LANG_NAMES.get(text, f"不明 ({text})"),
+            "event_id": event_id,
         })
 
     if not subfiles:
@@ -103,8 +105,11 @@ async def convert(request: Request):
     for entry in entries:
         if entry.name in settings_map:
             s = settings_map[entry.name]
-            log.info("  %s: voice→%d, text→%d", entry.name, s["voice_lang"], s["text_lang"])
-            edit_savefile(entry.data, s["voice_lang"], s["text_lang"])
+            eid = s.get("event_id")
+            log.info("  %s: voice→%d, text→%d, event_id→%s",
+                     entry.name, s["voice_lang"], s["text_lang"],
+                     f"0x{eid:X}" if eid is not None else "(unchanged)")
+            edit_savefile(entry.data, s["voice_lang"], s["text_lang"], event_id=eid)
 
     result = rebuild_vfs(entries, trailing)
 

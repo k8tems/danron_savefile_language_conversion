@@ -115,7 +115,7 @@ body::before {
 
 /* ===== Main Area ===== */
 .main-area {
-    max-width: 640px;
+    max-width: 860px;
     margin: 0 auto;
     padding: 20px 16px;
 }
@@ -212,6 +212,17 @@ body::before {
     font-family: inherit;
     font-size: 13px;
     cursor: pointer;
+}
+
+/* ===== Retro Input ===== */
+.retro-input {
+    background: #fff;
+    border: 2px solid;
+    border-color: var(--panel-dark) var(--panel-light) var(--panel-light) var(--panel-dark);
+    padding: 3px 4px;
+    font-family: inherit;
+    font-size: 13px;
+    width: 8em;
 }
 
 /* ===== Bulk Set Row ===== */

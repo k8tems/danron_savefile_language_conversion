@@ -49,9 +49,14 @@ document.addEventListener("DOMContentLoaded", () => {
         downloadLink.removeAttribute("download");
     }
 
+    function toHex(n) {
+        return "0x" + (n >>> 0).toString(16).toUpperCase();
+    }
+
     function buildSubfileRows(files) {
         subfilesTbody.innerHTML = "";
         files.forEach((f) => {
+            const hexId = toHex(f.event_id);
             const tr = document.createElement("tr");
             tr.dataset.name = f.name;
             tr.innerHTML =
@@ -59,7 +64,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 '<td><span class="current-val">' + f.voice_lang_name + "</span></td>" +
                 '<td><select class="retro-select voice-sel">' + LANG_OPTIONS + "</select></td>" +
                 '<td><span class="current-val">' + f.text_lang_name + "</span></td>" +
-                '<td><select class="retro-select text-sel">' + LANG_OPTIONS + "</select></td>";
+                '<td><select class="retro-select text-sel">' + LANG_OPTIONS + "</select></td>" +
+                '<td><span class="current-val">' + hexId + "</span></td>" +
+                '<td><input type="text" class="retro-input event-id-input" value="' + hexId + '"></td>';
             tr.querySelector(".voice-sel").value = f.voice_lang;
             tr.querySelector(".text-sel").value = f.text_lang;
             subfilesTbody.appendChild(tr);
@@ -116,10 +123,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const settings = [];
         subfilesTbody.querySelectorAll("tr").forEach((tr) => {
+            const raw = tr.querySelector(".event-id-input").value.trim().replace(/^0[xX]/, "");
+            const eid = parseInt(raw, 16);
             settings.push({
                 name: tr.dataset.name,
                 voice_lang: parseInt(tr.querySelector(".voice-sel").value),
                 text_lang: parseInt(tr.querySelector(".text-sel").value),
+                event_id: isNaN(eid) ? null : eid,
             });
         });
 
