@@ -145,7 +145,8 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error("有効なセーブデータが見つかりませんでした。");
       }
 
-      vfsState = { entries, filename: file.name || "savefile.vfs" };
+      const originals = new Map(entries.map((e) => [e.name, e.data.slice()]));
+      vfsState = { entries, originals, filename: file.name || "savefile.vfs" };
       buildSubfileRows(subfiles);
 
       hideStatus(uploadStatus);
@@ -187,6 +188,8 @@ document.addEventListener("DOMContentLoaded", () => {
       for (const entry of vfsState.entries) {
         const s = settingsMap[entry.name];
         if (s) {
+          const orig = vfsState.originals.get(entry.name);
+          if (orig) entry.data.set(orig);
           editSavefile(
             entry.data,
             s.voice_lang,
@@ -203,13 +206,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
       const filename = `${timestamp}-savedata.vfs`;
 
+      const prevHref = downloadLink.getAttribute("href");
+      if (prevHref && prevHref.startsWith("blob:")) {
+        URL.revokeObjectURL(prevHref);
+      }
       const url = URL.createObjectURL(blob);
       downloadLink.href = url;
       downloadLink.download = filename;
 
       hideStatus(convertStatus);
       downloadSec.hidden = false;
-      vfsState = null;
     } catch (err) {
       showStatus(
         convertStatus,
