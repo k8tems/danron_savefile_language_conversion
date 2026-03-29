@@ -1,0 +1,14 @@
+I have a python script that I'd like you to wrap as a webapp with a simple user interface.
+
+Script details:
+The script converts the language of a certain game's savefile.
+Use convert.py as reference for the core functionality, but you can modify or rewrite the code if you deem necessary.
+
+Webapp details:
+The user will upload a savefile, after which the app will display the current text and voice language of the file.
+Then the user will modify the displayed attributes and tell the website the run the conversion.
+After the conversion is done, either a button for downloading will be displayed to be clicked, or it will automatically start.
+I will leave that decision up to you.
+
+Design details:
+Make it a 90s style website titled ダンガンロンパ 
