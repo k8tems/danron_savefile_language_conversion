@@ -16,11 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const fileInput = $("#file-input");
   const uploadStatus = $("#upload-status");
   const settingsSec = $("#settings-section");
-  const downloadSec = $("#download-section");
   const convertBtn = $("#convert-btn");
-  const restartBtn = $("#restart-btn");
   const convertStatus = $("#convert-status");
-  const downloadLink = $("#download-link");
   const bulkVoice = $("#bulk-voice");
   const bulkText = $("#bulk-text");
   const bulkApplyBtn = $("#bulk-apply-btn");
@@ -47,18 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function resetAll() {
     uploadForm.reset();
     settingsSec.hidden = true;
-    downloadSec.hidden = true;
     hideStatus(uploadStatus);
     hideStatus(convertStatus);
     vfsState = null;
     subfilesTbody.innerHTML = "";
-
-    const href = downloadLink.getAttribute("href");
-    if (href && href.startsWith("blob:")) {
-      URL.revokeObjectURL(href);
-    }
-    downloadLink.removeAttribute("href");
-    downloadLink.removeAttribute("download");
   }
 
   function toHex(n) {
@@ -117,7 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     showStatus(uploadStatus, "読み込み中…", "loading");
     settingsSec.hidden = true;
-    downloadSec.hidden = true;
 
     const file = fileInput.files[0];
 
@@ -151,7 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       hideStatus(uploadStatus);
       settingsSec.hidden = false;
-      downloadSec.hidden = true;
     } catch (err) {
       showStatus(
         uploadStatus,
@@ -206,16 +193,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
       const filename = `${timestamp}-savedata.vfs`;
 
-      const prevHref = downloadLink.getAttribute("href");
-      if (prevHref && prevHref.startsWith("blob:")) {
-        URL.revokeObjectURL(prevHref);
-      }
       const url = URL.createObjectURL(blob);
-      downloadLink.href = url;
-      downloadLink.download = filename;
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
 
       hideStatus(convertStatus);
-      downloadSec.hidden = false;
     } catch (err) {
       showStatus(
         convertStatus,
@@ -227,5 +212,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  restartBtn.addEventListener("click", resetAll);
 });
