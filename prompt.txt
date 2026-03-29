@@ -1,0 +1,95 @@
+Each vfs file contains subfiles that can be parsed as such:
+<example code>
+from typing import Union
+
+class FileReader:
+    def __init__(self, data: Union[bytes, bytearray], endian: str = "little"):
+        self.data = data
+        self.p = 0
+        self.endian = endian
+
+    def tell(self) -> int:
+        return self.p
+
+    def seek(self, offset: int):
+        self.p = offset
+
+    def skip(self, n: int):
+        self.p += n
+
+    def _read(self, n: int) -> bytes:
+        chunk = self.data[self.p:self.p + n]
+        if len(chunk) != n:
+            raise EOFError("Attempted to read past end of buffer")
+        self.p += n
+        return chunk
+
+    def read_u32(self) -> int:
+        return int.from_bytes(self._read(4), self.endian)
+
+    def read_bytes(self, n: int) -> bytes:
+        return self._read(n)
+
+    def read_fixed_bytes(self) -> bytes:
+        return self._read(self.read_u32())
+
+    def read_str(self, encoding: str = "utf-8") -> str:
+        return self.read_fixed_bytes().decode(encoding)
+        length = self.read_u32()
+        raw = self._read(length)
+        return raw.decode(encoding)
+
+    # Optional: peek without advancing cursor
+    def peek_u32(self) -> int:
+        return int.from_bytes(self.data[self.p:self.p + 4], self.endian)
+
+def read_vfs(vfs_name):
+    vfs = read_bytearray_file(vfs_name)
+    vfs_mod = vfs.copy()
+    reader = FileReader(vfs_mod)
+    for i in range(100):
+        if reader.peek_u32() == 0xdeadbeef:
+            break
+        print(reader.read_str())
+        reader.read_fixed_bytes()
+
+read_vfs('speedrun.vfs')
+</example code>
+
+<example logs>
+data0000.bin
+data0001.bin
+data0002.bin
+data0003.bin
+data0006.bin
+data0010.bin
+data0011.bin
+data0012.bin
+data0013.bin
+data0015.bin
+data0017.bin
+data0019.bin
+data0026.bin
+data0027.bin
+data0028.bin
+data0029.bin
+icon0001.png
+icon0010.png
+icon0011.png
+icon0012.png
+icon0013.png
+icon0015.png
+icon0017.png
+icon0019.png
+icon0026.png
+icon0027.png
+icon0028.png
+icon0029.png
+</example logs>
+
+vfs files always contain at least one data****.bin file, but the icons may or may not exist.
+I'd like you to modify the webapp, so that the user can now modify the voice and text language of each data****.bin 
+The offsets defined in savefile.py are relative to the beginning of each .bin file.
+
+If you plan on using the example code, make sure you take into account the preexisting subroutines to avoid duplicating logic.
+The code doesn't have to be perfect, I'm more than capable of cleaning it up after you.
