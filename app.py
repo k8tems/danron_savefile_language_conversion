@@ -14,14 +14,12 @@ LANG_NAMES = {0: "English", 1: "日本語", 2: "中文"}
 
 
 class Offset:
-    VOICE = 0x31C
     TEXT = 0x31D
     HEADER_CHECKSUM = 0x330
+    VOICE = 0x1D394
     BODY_CHECKSUM = 0x3ACA4
     HEADER_RANGE = (0x2F8, 0x330)
     BODY_RANGE = (0x334, 0x3ACA4)
-    EXTRA_1 = 0x3A770
-    EXTRA_2 = 0x10394
     MIN_FILE_SIZE = BODY_CHECKSUM + 4
 
 
@@ -89,8 +87,6 @@ async def convert(
 
     buf[Offset.VOICE] = voice_lang
     buf[Offset.TEXT] = text_lang
-    buf[Offset.EXTRA_1] = voice_lang
-    buf[Offset.EXTRA_2] = voice_lang
 
     fix_checksum(buf, Offset.HEADER_RANGE, Offset.HEADER_CHECKSUM)
     fix_checksum(buf, Offset.BODY_RANGE, Offset.BODY_CHECKSUM)
