@@ -198,7 +198,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const out = rebuildVfs(vfsState.entries);
       const blob = new Blob([out], { type: "application/octet-stream" });
-      const filename = `converted_${vfsState.filename}`;
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, "0");
+      const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
+      const filename = `${timestamp}-savedata.vfs`;
 
       const url = URL.createObjectURL(blob);
       downloadLink.href = url;
