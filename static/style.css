@@ -1,0 +1,380 @@
+/* ===== Reset & Base ===== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #0a0a2e;
+    --cyan: #00ffcc;
+    --yellow: #ffff00;
+    --magenta: #ff00ff;
+    --panel-face: #c0c0c0;
+    --panel-light: #dfdfdf;
+    --panel-dark: #808080;
+    --panel-darkest: #404040;
+    --title-bar-bg: linear-gradient(90deg, #00007b, #0078d4);
+    --text-on-panel: #000;
+}
+
+body {
+    background: var(--bg);
+    color: var(--cyan);
+    font-family: "ＭＳ ゴシック", "MS Gothic", "Courier New", monospace;
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Starfield background */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+        radial-gradient(1.2px 1.2px at  5%  8%, #fff 50%, transparent 50%),
+        radial-gradient(1.0px 1.0px at 12% 45%, #aaf 50%, transparent 50%),
+        radial-gradient(1.4px 1.4px at 20% 72%, #fff 50%, transparent 50%),
+        radial-gradient(0.8px 0.8px at 28% 18%, #ccf 50%, transparent 50%),
+        radial-gradient(1.1px 1.1px at 35% 55%, #fff 50%, transparent 50%),
+        radial-gradient(1.0px 1.0px at 42% 90%, #aaf 50%, transparent 50%),
+        radial-gradient(1.3px 1.3px at 48% 30%, #fff 50%, transparent 50%),
+        radial-gradient(0.9px 0.9px at 55% 65%, #ccf 50%, transparent 50%),
+        radial-gradient(1.2px 1.2px at 62% 12%, #fff 50%, transparent 50%),
+        radial-gradient(1.0px 1.0px at 68% 82%, #aaf 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 75% 40%, #fff 50%, transparent 50%),
+        radial-gradient(0.8px 0.8px at 82% 70%, #ccf 50%, transparent 50%),
+        radial-gradient(1.1px 1.1px at 88% 22%, #fff 50%, transparent 50%),
+        radial-gradient(1.3px 1.3px at 93% 58%, #aaf 50%, transparent 50%),
+        radial-gradient(1.0px 1.0px at 97% 85%, #fff 50%, transparent 50%),
+        radial-gradient(1.2px 1.2px at 15% 35%, #fff 50%, transparent 50%),
+        radial-gradient(0.9px 0.9px at 38% 78%, #ccf 50%, transparent 50%),
+        radial-gradient(1.4px 1.4px at 58%  5%, #fff 50%, transparent 50%),
+        radial-gradient(1.0px 1.0px at 72% 52%, #aaf 50%, transparent 50%),
+        radial-gradient(1.1px 1.1px at 85% 95%, #fff 50%, transparent 50%),
+        radial-gradient(ellipse at center, #0a0a2e 0%, #050518 100%);
+}
+
+/* ===== Header Image ===== */
+.header-wrap {
+    text-align: center;
+    background: #000;
+    border-bottom: 3px solid var(--yellow);
+}
+
+.header-img {
+    display: block;
+    width: 100%;
+    max-width: 960px;
+    height: auto;
+    margin: 0 auto;
+}
+
+/* ===== Title Bar ===== */
+.title-bar {
+    text-align: center;
+    padding: 18px 12px 14px;
+}
+
+.title-stars {
+    color: var(--yellow);
+    font-size: 0.85rem;
+    letter-spacing: 0.6em;
+    opacity: 0.7;
+}
+
+.title-bar h1 {
+    color: var(--yellow);
+    font-size: clamp(1.3rem, 4vw, 2rem);
+    letter-spacing: 0.15em;
+    text-shadow:
+        0 0 8px rgba(255, 255, 0, 0.6),
+        2px 2px 0 #cc6600;
+    margin: 4px 0;
+}
+
+/* ===== Rainbow HR ===== */
+.rainbow-hr {
+    border: none;
+    height: 4px;
+    background: linear-gradient(
+        90deg,
+        #ff0000, #ff7f00, #ffff00,
+        #00ff00, #0000ff, #4b0082, #9400d3,
+        #ff0000
+    );
+    background-size: 200% 100%;
+    animation: rainbow-scroll 4s linear infinite;
+}
+
+@keyframes rainbow-scroll {
+    to { background-position: 200% 0; }
+}
+
+/* ===== Main Area ===== */
+.main-area {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 20px 16px;
+}
+
+/* ===== Win95 Panel ===== */
+.panel {
+    margin-bottom: 20px;
+    background: var(--panel-face);
+    border: 2px solid;
+    border-color: var(--panel-light) var(--panel-darkest) var(--panel-darkest) var(--panel-light);
+    box-shadow: 1px 1px 0 #000;
+}
+
+.panel-title {
+    background: var(--title-bar-bg);
+    color: #fff;
+    padding: 3px 8px;
+    font-size: 13px;
+    font-weight: bold;
+    user-select: none;
+}
+
+.panel-content {
+    padding: 16px;
+    color: var(--text-on-panel);
+}
+
+.panel-hr {
+    border: none;
+    border-top: 1px solid var(--panel-dark);
+    border-bottom: 1px solid var(--panel-light);
+    margin: 14px 0;
+}
+
+/* ===== Retro Buttons ===== */
+.retro-btn {
+    display: inline-block;
+    background: var(--panel-face);
+    border: 2px solid;
+    border-color: var(--panel-light) var(--panel-darkest) var(--panel-darkest) var(--panel-light);
+    padding: 5px 18px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-on-panel);
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.retro-btn:hover {
+    background: #d0d0d0;
+}
+
+.retro-btn:active {
+    border-color: var(--panel-darkest) var(--panel-light) var(--panel-light) var(--panel-darkest);
+    padding: 6px 17px 4px 19px;
+}
+
+.retro-btn.big {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 28px;
+}
+
+.retro-btn.big:active {
+    padding: 9px 27px 7px 29px;
+}
+
+.retro-btn:disabled {
+    color: var(--panel-dark);
+    cursor: default;
+}
+
+.retro-btn:disabled:active {
+    border-color: var(--panel-light) var(--panel-darkest) var(--panel-darkest) var(--panel-light);
+    padding: 5px 18px;
+}
+
+.download-btn {
+    background: #ffffcc;
+}
+
+.download-btn:hover {
+    background: #ffff99;
+}
+
+/* ===== Retro Select ===== */
+.retro-select {
+    background: #fff;
+    border: 2px solid;
+    border-color: var(--panel-dark) var(--panel-light) var(--panel-light) var(--panel-dark);
+    padding: 3px 4px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* ===== Upload Section ===== */
+.upload-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+#file-input {
+    font-family: inherit;
+    font-size: 12px;
+    max-width: 100%;
+}
+
+/* ===== Settings Table ===== */
+.settings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+
+.settings-table th {
+    text-align: center;
+    padding: 4px 6px 8px;
+    font-size: 11px;
+    color: var(--panel-dark);
+    border-bottom: 1px solid var(--panel-dark);
+}
+
+.settings-table td {
+    padding: 8px 6px;
+    vertical-align: middle;
+}
+
+.label-cell {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.arrow-cell {
+    text-align: center;
+    color: #cc0000;
+    font-size: 14px;
+}
+
+.current-val {
+    display: inline-block;
+    background: #ffffcc;
+    border: 1px solid var(--panel-dark);
+    padding: 2px 8px;
+    font-weight: bold;
+    color: #000080;
+    white-space: nowrap;
+}
+
+/* ===== Button Row ===== */
+.btn-row {
+    text-align: center;
+    margin-top: 12px;
+}
+
+/* ===== Status Messages ===== */
+.status-msg {
+    margin-top: 10px;
+    padding: 6px 10px;
+    font-size: 12px;
+    border: 1px solid var(--panel-dark);
+    background: #fffff0;
+}
+
+.status-msg.error {
+    color: #cc0000;
+    background: #fff0f0;
+    border-color: #cc0000;
+}
+
+.status-msg.loading {
+    color: #444;
+    background: #f0f0ff;
+}
+
+/* ===== Download Section ===== */
+.complete-msg {
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    color: #006600;
+    margin-bottom: 4px;
+    animation: pulse-green 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-green {
+    from { color: #006600; }
+    to   { color: #00cc00; }
+}
+
+.download-content {
+    text-align: center;
+}
+
+/* ===== Footer ===== */
+.footer {
+    text-align: center;
+    padding: 14px 12px 24px;
+    color: #666;
+    font-size: 12px;
+}
+
+.footer p {
+    margin-bottom: 4px;
+}
+
+.footer-sub {
+    font-size: 10px;
+    color: #555;
+    font-style: italic;
+}
+
+/* ===== Mobile Warning ===== */
+#mobile-warning {
+    display: none;
+    min-height: 100vh;
+    background: var(--bg);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.mobile-inner {
+    width: 100%;
+    max-width: 400px;
+}
+
+.mobile-msg-ja {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--yellow);
+    margin-bottom: 8px;
+}
+
+.mobile-msg-en {
+    font-size: 14px;
+    color: var(--cyan);
+    margin-bottom: 20px;
+}
+
+.sayaka-img {
+    display: block;
+    margin: 0 auto;
+    width: 260px;
+    max-width: 80%;
+    height: auto;
+}
+
+/* ===== Responsive: Mobile Gate ===== */
+@media (max-width: 768px) {
+    #mobile-warning {
+        display: flex;
+    }
+    #desktop-content {
+        display: none;
+    }
+}

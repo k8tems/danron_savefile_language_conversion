@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>セーブファイル言語変換</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- Mobile warning -->
+<div id="mobile-warning">
+    <div class="mobile-inner">
+        <div class="mobile-panel">
+            <div class="panel-title">⚠ ご注意 ⚠</div>
+            <div class="panel-content">
+                <p class="mobile-msg-ja">このウェブサイトはPC専用です。</p>
+                <p class="mobile-msg-en">This website is intended for PC use.</p>
+                <img src="/sayaka.png" alt="Sayaka" class="sayaka-img">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Desktop content -->
+<div id="desktop-content">
+    <div class="header-wrap">
+        <img src="/header.png" alt="Header" class="header-img">
+    </div>
+
+    <div class="title-bar">
+        <div class="title-stars">★ ☆ ★ ☆ ★</div>
+        <h1>セーブファイル言語変換</h1>
+        <div class="title-stars">★ ☆ ★ ☆ ★</div>
+    </div>
+
+    <hr class="rainbow-hr">
+
+    <main class="main-area">
+
+        <!-- Upload Panel -->
+        <div id="upload-section" class="panel">
+            <div class="panel-title">📁 セーブファイルアップロード</div>
+            <div class="panel-content">
+                <form id="upload-form">
+                    <div class="upload-row">
+                        <input type="file" id="file-input" accept=".vfs">
+                        <button type="submit" class="retro-btn">アップロード</button>
+                    </div>
+                </form>
+                <div id="upload-status" class="status-msg" hidden></div>
+            </div>
+        </div>
+
+        <!-- Settings Panel -->
+        <div id="settings-section" class="panel" hidden>
+            <div class="panel-title">🔧 言語設定</div>
+            <div class="panel-content">
+                <table class="settings-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>現在の設定</th>
+                            <th></th>
+                            <th>変換後</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="label-cell">ボイス言語</td>
+                            <td><span id="current-voice" class="current-val"></span></td>
+                            <td class="arrow-cell">▶</td>
+                            <td>
+                                <select id="voice-select" class="retro-select">
+                                    <option value="0">English</option>
+                                    <option value="1">日本語</option>
+                                    <option value="2">中文</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label-cell">テキスト言語</td>
+                            <td><span id="current-text" class="current-val"></span></td>
+                            <td class="arrow-cell">▶</td>
+                            <td>
+                                <select id="text-select" class="retro-select">
+                                    <option value="0">English</option>
+                                    <option value="1">日本語</option>
+                                    <option value="2">中文</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="btn-row">
+                    <button id="convert-btn" class="retro-btn big">★ 変換実行 ★</button>
+                </div>
+                <div id="convert-status" class="status-msg" hidden></div>
+            </div>
+        </div>
+
+        <!-- Download Panel -->
+        <div id="download-section" class="panel" hidden>
+            <div class="panel-title">✅ 変換完了</div>
+            <div class="panel-content download-content">
+                <p class="complete-msg">変換が完了しました！</p>
+                <div class="btn-row">
+                    <a id="download-link" class="retro-btn big download-btn">💾 ダウンロード</a>
+                </div>
+                <hr class="panel-hr">
+                <div class="btn-row">
+                    <button id="restart-btn" class="retro-btn">最初からやり直す</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <hr class="rainbow-hr">
+
+    <footer class="footer">
+        <p>※ ダンガンロンパ セーブファイル変換ツール ※</p>
+        <p class="footer-sub">Best viewed with Internet Explorer 4.0 at 800x600</p>
+    </footer>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
